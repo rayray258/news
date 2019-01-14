@@ -14,7 +14,7 @@ for a in html.find("div",id="breaknews_body").find_all("dt"):
         Nresponse = urlopen("https://udn.com"+newsurl["href"])
         Nhtml = BeautifulSoup(Nresponse)
         print(category.text, times.text, title.text, view.text, "https://udn.com" + newsurl["href"])
-        for content in Nhtml.find_all("p"):
+        for content in Nhtml.find("div", id="story_body_content").find_all("p"):
             print(content.text)
     except TypeError:
         pass

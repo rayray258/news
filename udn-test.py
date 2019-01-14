@@ -6,6 +6,9 @@ while True:
     print("處理第", page + 2, "頁")
     response = urlopen(url)
     html = BeautifulSoup(response)
+    if len(html) == 0:
+        print("應該爬完了")
+        break
     page = page + 1
     for a in html.find_all("dt",class_="lazyload"):
         category = a.find("a",class_="cate")

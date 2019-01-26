@@ -1,8 +1,8 @@
-#udn新聞第一頁
+import requests
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-import pandas as pd
-df = pd.DataFrame(columns=["category","times","title","view","URL","content"])
+import time
+
 url = "https://udn.com/news/breaknews/1/99#breaknews"
 response = urlopen(url)
 html = BeautifulSoup(response)
@@ -13,18 +13,23 @@ for a in html.find("div",id="breaknews_body").find_all("dt"):
     view = a.find("div",class_="view")
     newsurl = a.find("a")
     try:
-        Nresponse = urlopen("https://udn.com"+newsurl["href"])
+        Nurl = "https://udn.com"+newsurl["href"]
+        Nresponse = urlopen(Nurl)
         Nhtml = BeautifulSoup(Nresponse)
-        print(category.text, times.text, title.text, view.text, "https://udn.com" + newsurl["href"])
-        txt = ""
-        for content in Nhtml.find("div", id="story_body_content").find_all("p"):
-            txt = txt + content.text
-            print(content.text)
+        print(category.text, times.text, title.text, view.text, Nurl)
 
-        s = pd.Series([category.text, times.text, title.text, view.text, "https://udn.com" + newsurl["href"], txt],
-                    index=["category","times","title","view","URL","content"])
-        df = df.append(s, ignore_index=True)
-    except TypeError:
+        #內文
+        content_txt = ""
+        for content in Nhtml.find("div", id="story_body_content").find_all("p"):
+            content_txt = content_txt + content.text
+        print(content_txt)
+
+
+        time.sleep(1)
+    except TypeError :
         pass
     continue
-df.to_csv("news.csv", encoding="utf-8", index=False)
+
+from udn_more import udnmore
+udnmore()
+

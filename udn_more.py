@@ -9,7 +9,7 @@ def udnmore():
         print("處理第", page , "頁")
         response = urlopen(url)
         html = BeautifulSoup(response)
-        if len(html) == 0:
+        if len(html.text) == 0:
             print("應該爬完了")
             break
         page = page + 1

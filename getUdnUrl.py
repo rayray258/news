@@ -3,11 +3,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import time, os
 
-# <!-- For MAC電腦
-# import ssl
-# ssl._create_default_https_context = ssl._create_unverified_context
-# -->
-
 if __name__ == "__main__":
     # 紀錄爬蟲開始時間
     start_time = time.time()
@@ -40,7 +35,7 @@ if __name__ == "__main__":
             page_html = BeautifulSoup(page_response)
             # 結束爬蟲
             if len(page_html.text) == 0:
-                print("應該爬完了")
+                print("爬完了")
                 break
             for page_news in page_html.find_all("dt"):
                 news_url = page_news.find("a")["href"]
@@ -50,6 +45,7 @@ if __name__ == "__main__":
                     update_url_list.append(news_url)
                 count = count + 1
         page = page + 1
+
 
         # 紀錄爬蟲結束時間
     end_time = time.time()
@@ -76,7 +72,7 @@ if __name__ == "__main__":
     if os.path.exists("update_udn_news_url.txt"):
         old_update_url_list = []  # 紀錄之前更新但還沒爬新聞內容的新聞網址
         new_update_url_list = []  # 紀錄此次更新的新聞網址
-        new_update_url_list = url_list
+        new_update_url_list = url_list.copy()
         # 開啟之前紀錄更新的新聞網址的檔案
         with open("update_udn_news_url.txt", "r", encoding="utf-8") as f:
             old_update_url_list = f.read().split("\n")
@@ -108,7 +104,7 @@ if __name__ == "__main__":
     print('Save url file done, Time cost: %s ' % (end_time - start_time))
 
     # 檢查用
-    # print(len(update_url_list))
-    # print(len(old_url_list))
-    # print(len(url_list))
-    # print(count)
+    print(len(update_url_list))
+    print(len(old_url_list))
+    print(len(url_list))
+    print(count)

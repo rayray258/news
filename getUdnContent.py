@@ -19,7 +19,7 @@ def getNewsContent(urlQueue):
             i = urlQueue.qsize()
         except Exception as e:
             break
-        #print('Current Thread Name %s, Url: %s ' % (threading.currentThread().name, news_url))
+        print('Current Thread Name %s, Url: %s ' % (threading.currentThread().name, news_url))
 
         ## 開始爬蟲
         try:
@@ -48,7 +48,10 @@ def getNewsContent(urlQueue):
 
             news_html = BeautifulSoup(news_response)
             news = news_html.find("div", id="mainbar")
-            news_title = news.find("h1").text
+            try:
+                news_title = news.find("h1").text
+            except AttributeError:
+                break
             # news_view = news.find("div", class_="ndArticle_view")
             # # 沒有觀看數就設定為0
             # if news_view == None:
@@ -59,8 +62,10 @@ def getNewsContent(urlQueue):
             news_content = ""
             for content in news.find_all("p"):
                 news_content =news_content +content.text
-
-            news_keyword = news.find("div", id="story_tags").text
+            try:
+                news_keyword = news.find("div", id="story_tags").text
+            except AttributeError:
+                news_keyword =""
             # keyword_list = [] # 紀錄此新聞的關鍵字
             # if not news_keyword == None:
             #     news_keyword = news_keyword.find_all("a")
@@ -93,7 +98,7 @@ if __name__ == "__main__":
             time.sleep(120)
 
     # 使用系統指令更改檔案名字
-    # subprocess.run(["move", "update_udn_news_url.txt", "update_udn_news_url.txt.bak"])
+    os.rename("update_udn_news_url.txt", "update_udn_news_url.txt.bak")
 
     # 紀錄爬蟲開始時間
     start_time = time.time()
@@ -104,11 +109,11 @@ if __name__ == "__main__":
         else:
             # 將每筆新聞網址放入佇列
             urlQueue.put(url)
-            #print(url)
+            print(url)
 
     threads = []
     # 可以調節執行緒數，進而控制抓取速度
-    threadNum = 10
+    threadNum = 20
     for i in range(0, threadNum):
         t = threading.Thread(target=getNewsContent, args=(urlQueue, ))
         threads.append(t)
@@ -176,7 +181,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # 使用系統指令刪除檔案
-    # subprocess.run(["del", "update_udn_news_url.txt.bak"])
+    os.remove("update_udn_news_url.txt.bak")
 
     # 紀錄刪除檔案結束時間
     end_time = time.time()

@@ -28,6 +28,8 @@ if __name__ == "__main__":
                 except TypeError:
                     pass
                 continue
+        elif page ==50:
+            break
         else :
             url = "https://udn.com/news/get_breaks_article/" + str(page) + "/1/99?_=" + str(1547385778401 + page)
             print("處理頁面：", url)

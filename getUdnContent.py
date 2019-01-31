@@ -62,8 +62,10 @@ def getNewsContent(urlQueue):
             news_content = ""
             for content in news.find_all("p"):
                 news_content =news_content +content.text
+            news_keyword = []
             try:
-                news_keyword = news.find("div", id="story_tags").text
+                for news_key in news.find("div", id="story_tags").find_all("a"):
+                    news_keyword.append(news_key.text)
             except AttributeError:
                 news_keyword =""
             # keyword_list = [] # 紀錄此新聞的關鍵字
@@ -81,8 +83,7 @@ def getNewsContent(urlQueue):
                            "news_create_time": news_create_time,
                            "news_content": news_content,
                            "news_keyword": news_keyword,
-                           "news_tag": news_tag,
-                           "news_view": [{"view": 0, "time": news_create_time}]})
+                           "news_tag": news_tag})
 
             # 爲了突出效果，設定延時
             time.sleep(1)
